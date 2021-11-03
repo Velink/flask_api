@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import *
 from flask_cors import CORS
 from werkzeug import exceptions
+import smtplib, ssl
 
 
 app = Flask(__name__)
@@ -23,6 +24,9 @@ def vg_handler():
     elif request.method == 'POST':
         data = request.json
         return f"You added a video-game! The game is called {data['name']}", 200
+        wanted = input("Would you like to receive email confirmation? y/n")
+        if wanted.lower() == "y":
+            send_mail()
 
 
 @app.route('/games/<int:game_id>')
@@ -38,6 +42,20 @@ def handle_404(err):
 @app.errorhandler(exceptions.InternalServerError)
 def handle_500(err):
     return jsonify({"message": f"it's not you, it's us"}), 500
+
+def send_mail():
+    port = 587
+    smtp_server = "smtp.gmail.com"
+    message="""\
+    Subject: Congratulations
+
+    You successfully added a video game to the database.
+    """
+    receiver = input("Your email...")
+    with smtplib.SMTP(smtp_server, port) as server:
+        server.starttls(context=context)
+        server.login("cal.vel.flask@gmail.com", "amanfromnantucket")
+        server.sendmail("cal.vel.flask@gmail.com", receiver, message)
 
 
 # Boilerplate code which protects users from accidentally invoking the script when they don't want to
