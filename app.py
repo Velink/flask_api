@@ -22,10 +22,10 @@ def vg_handler():
         ]), 200
     elif request.method == 'POST':
         data = request.json
-        return f"You created a cat! The cat is called {data['name']}", 200
+        return f"You added a video-game! The game is called {data['name']}", 200
 
 
-@app.route('/cats/<int:cat_id>')
+@app.route('/games/<int:game_id>')
 def cat_handler(cat_id):
     pass
 
